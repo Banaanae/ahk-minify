@@ -15,8 +15,11 @@ Minify(*) {
     If (MinifyFileName = "")
         Return
     MinifyFile := FileRead(MinifyFileName)
-	If (StripCommentsCtrl.Value = "1")
-		MinifyFile := StripComments(MinifyFile)
+	If (StripCommentsCtrl.Value = "1") {
+		tempRes := MsgBox("Buggy, Want to continue?","Warning", "Y/N")
+		If (tempRes = "Yes")
+			MinifyFile := StripComments(MinifyFile)
+	}
 	If (ShortenVariablesCtrl.Value = "1")
 		MsgBox("Not implemented, Skipping", "WIP", 48)
 	If (RemoveWhitespacesCtrl.Value = "1")
@@ -24,16 +27,25 @@ Minify(*) {
 	If (RemoveEmptyLinesCtrl.Value = "1")
 		MinifyFile := RemoveEmptyLines(MinifyFile)
 	If (RemoveBlankMsgBoxCtrl.Value = "1")
-		MsgBox("Not implemented, Skipping", "WIP", 48)
+		MinifyFile := RemoveBlankMsgBox(MinifyFile)
 	If (RemoveAllMsgBoxCtrl.Value = "1")
-		MsgBox("Not implemented, Skipping", "WIP", 48)
+		MinifyFile := RemoveAllMsgBox(MinifyFile)
 	If (RemoveIndentsCtrl.Value = "1")
-		MsgBox("Not implemented, Skipping", "WIP", 48)
+		MinifyFile := RemoveIndents(MinifyFile)
     MinifiedFileName := StrReplace(MinifyFileName, ".ahk", ".min.ahk") ; This will behave strange if 2 .ahk is in the path
 	; FileAppend(MinifyFile), MinifiedFileName
+	; Check if lasterror = oserror
+	MsgBox("Success! Wrote the file to " MinifiedFileName "`nPlease ensure you keep the source as it sometimes removes too much`n`nWould you like you open the file in Notepad?", "Minification Success", "Y/N")
 }
 
 StripComments(MinifyFile) {
+	/*
+Detect semicolon comments without picking them up in strings
+Do not match if " before ; ???
+
+Multiline comments - Figure out why it doesnt work
+	*/
+
     ; Comment matching regex
 
     ; Semicolon based comments
@@ -41,21 +53,44 @@ StripComments(MinifyFile) {
 
     ; /* */ based comments
     ; ^( |\t)*?\/\*(.*)?(\n.*)*\*\/
-    MinifyFile := RegexReplace(MinifyFile, "m);.*[^`"\)]$") ; TODO: Apply \K\R once VVV is working
-	MinifyFile := RegexReplace(MinifyFile, "mU)^(\s)*?\/\*(.*)?(\n.*)*\*\/", "") ; Not working
+	; ^( |\t)*?\/\*(.*\n)*?\*\/
+	MsgBox(MinifyFile)
+    MinifyFile := RegexReplace(MinifyFile, "m)( |\t)*;.*[^`"\)]$")
+	MsgBox(MinifyFile)
+	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*?\/\*(.*\n)*?\*\/", "") ; Not working
+	MsgBox(MinifyFile)
 	Return MinifyFile
 }
 
-ShortenVariables() {
+ShortenVariables(MinifyFile) {
 	; Skipped
 }
 
-RemoveWhitespaces() {
+RemoveWhitespaces(MinifyFile) {
 	; Skipped
+	; ([~><=!:\+\-\*\/\.&|^]+==?)
 }
 
 RemoveEmptyLines(MinifyFile) {
-	; ^( |\t)*\k\r
+	; ^( |\t)*\K\R
 	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*\K\R")
+	Return MinifyFile
+}
+
+RemoveBlankMsgBox(MinifyFile) {
+	; ^\s*?MsgBox(\(\))?$
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(\))?$")
+	Return MinifyFile
+}
+
+RemoveAllMsgBox(MinifyFile) {
+	; ^\s*?MsgBox(\(.*\))?( ".*")?$
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(.*\))?( ".*")?$")
+	Return MinifyFile
+}
+
+RemoveIndents(MinifyFile) {
+	; ^( |\t)*
+	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*")
 	Return MinifyFile
 }
