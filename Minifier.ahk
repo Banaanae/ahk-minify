@@ -33,7 +33,7 @@ Minify(*) {
 	If (RemoveIndentsCtrl.Value = "1")
 		MinifyFile := RemoveIndents(MinifyFile)
     MinifiedFileName := StrReplace(MinifyFileName, ".ahk", ".min.ahk") ; This will behave strange if 2 .ahk is in the path
-	; FileAppend(MinifyFile), MinifiedFileName
+	 FileAppend(MinifyFile, MinifiedFileName)
 	; Check if lasterror = oserror
 	MsgBox("Success! Wrote the file to " MinifiedFileName "`nPlease ensure you keep the source as it sometimes removes too much`n`nWould you like you open the file in Notepad?", "Minification Success", "Y/N")
 }
@@ -85,7 +85,7 @@ RemoveBlankMsgBox(MinifyFile) {
 
 RemoveAllMsgBox(MinifyFile) {
 	; ^\s*?MsgBox(\(.*\))?( ".*")?$
-	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(.*\))?( ".*")?$")
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(.*\))?( `".*`")?$")
 	Return MinifyFile
 }
 
