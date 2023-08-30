@@ -28,14 +28,14 @@ Minify(*) {
 		MsgBox("Not implemented, Skipping", "WIP", 48)
 	If (RemoveWhitespacesCtrl.Value = "1")
 		MsgBox("Not implemented, Skipping", "WIP", 48)
-	If (RemoveEmptyLinesCtrl.Value = "1")
-		MinifyFile := RemoveEmptyLines(MinifyFile)
+	If (RemoveIndentsCtrl.Value = "1")
+		MinifyFile := RemoveIndents(MinifyFile)
 	If (RemoveBlankMsgBoxCtrl.Value = "1")
 		MinifyFile := RemoveBlankMsgBox(MinifyFile)
 	If (RemoveAllMsgBoxCtrl.Value = "1")
 		MinifyFile := RemoveAllMsgBox(MinifyFile)
-	If (RemoveIndentsCtrl.Value = "1")
-		MinifyFile := RemoveIndents(MinifyFile)
+	If (RemoveEmptyLinesCtrl.Value = "1")
+		MinifyFile := RemoveEmptyLines(MinifyFile)
     MinifiedFileName := StrReplace(MinifyFileName, ".ahk", ".min.ahk") ; This will behave strange if 2 .ahk is in the path
 	WriteFile(MinifyFile, MinifiedFileName)
 }
@@ -93,12 +93,6 @@ RemoveWhitespaces(MinifyFile) {
 	; ([~><=!:\+\-\*\/\.&|^]+==?)
 }
 
-RemoveEmptyLines(MinifyFile) {
-	; ^( |\t)*\K\R
-	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*\K\R")
-	Return MinifyFile
-}
-
 RemoveBlankMsgBox(MinifyFile) {
 	; ^\s*?MsgBox(\(\))?$
 	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(\))?$")
@@ -114,6 +108,12 @@ RemoveAllMsgBox(MinifyFile) {
 RemoveIndents(MinifyFile) {
 	; ^( |\t)*
 	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*")
+	Return MinifyFile
+}
+
+RemoveEmptyLines(MinifyFile) {
+	; ^( |\t)*\K\R
+	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*\K\R")
 	Return MinifyFile
 }
 
