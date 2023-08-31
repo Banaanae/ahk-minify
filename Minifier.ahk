@@ -1,16 +1,24 @@
 MinifyGui := Gui(, "AutoHotKey Minifier")
 StripCommentsCtrl := MinifyGui.AddCheckBox("x10 y10 w100 h30", "Strip Comments")
 StripCommentsCtrl.ToolTip := "(WIP) Removes inline and multiline comments"
-ShortenVariablesCtrl := MinifyGui.AddCheckBox("x120 y10 w100 h30", "Shorten Variables") ; .ToolTip := "(NOT DONE) Attempts to shorten variable names"
-RemoveWhitespacesCtrl := MinifyGui.AddCheckBox("x230 y10 w100 h30", "Remove whitespaces") ; .ToolTip := "(NOT DONE) Removes extra whitespaces in methods, variable declarations, etc"
-RemoveIndentsCtrl := MinifyGui.AddCheckBox("x340 y10 w100 h30", "Remove Indents") ; .ToolTip := "Removes spaces and tabs before lines of code"
-RemoveBlankMsgBoxCtrl := MinifyGui.AddCheckBox("x10 y50 w100 h30", "Remove blank MsgBox") ; .ToolTip := "Removes blank message boxes"
-RemoveAllMsgBoxCtrl := MinifyGui.AddCheckBox("x120 y50 w100 h30", "Remove all MsgBox") ; .ToolTip := "Removes all message boxes including blank"
-RemoveEmptyLinesCtrl := MinifyGui.AddCheckBox("x230 y50 w100 h30", "Remove empty lines") ; .ToolTip := "Removes empty lines, recommended to use as most rules because they do not remove newline"
+ShortenVariablesCtrl := MinifyGui.AddCheckBox("x120 y10 w100 h30", "Shorten Variables")
+ShortenVariablesCtrl.ToolTip := "(NOT DONE) Attempts to shorten variable names"
+RemoveWhitespacesCtrl := MinifyGui.AddCheckBox("x230 y10 w100 h30", "Remove whitespaces")
+RemoveWhitespacesCtrl.ToolTip := "(NOT DONE) Removes extra whitespaces in methods, variable declarations, etc"
+RemoveIndentsCtrl := MinifyGui.AddCheckBox("x340 y10 w100 h30", "Remove Indents")
+RemoveIndentsCtrl.ToolTip := "Removes spaces and tabs before lines of code"
+RemoveBlankMsgBoxCtrl := MinifyGui.AddCheckBox("x10 y50 w100 h30", "Remove blank MsgBox")
+RemoveBlankMsgBoxCtrl.ToolTip := "Removes blank message boxes"
+RemoveAllMsgBoxCtrl := MinifyGui.AddCheckBox("x120 y50 w100 h30", "Remove all MsgBox")
+RemoveAllMsgBoxCtrl.ToolTip := "Removes all message boxes including blank"
+UseOTBCtrl := MinifyGui.AddCheckBox("x230 y50 w100 h30", "Use OTB")
+UseOTBCtrl.ToolTip := "(WIP) Forces one true brace"
+RemoveEmptyLinesCtrl := MinifyGui.AddCheckBox("x120 y90 w100 h30", "Remove empty lines")
+RemoveEmptyLinesCtrl.ToolTip := "Removes empty lines, recommended to use as most rules because they do not remove newline"
+RemoveTrailingSpacesCtrl := MinifyGui.AddCheckBox("x230 y90 w100 h30", "Remove trailing spaces")
+RemoveTrailingSpacesCtrl.ToolTip := "Removes trailing whitespaces and tabs"
 ;Ctrl := MinifyGui.AddCheckBox("x340 y50 w100 h30", "Less Gui Lines") <- Not sure if possible
-; OTB
-; Trailing space
-MinifyGui.AddButton("x10 y90 w430 h30", "Select file and Minify").OnEvent("Click", Minify)
+MinifyGui.AddButton("x10 y120 w430 h30", "Select file and Minify").OnEvent("Click", Minify)
 MinifyGui.Show()
 OnMessage(0x0200, On_WM_MOUSEMOVE)
 
@@ -34,8 +42,12 @@ Minify(*) {
 		MinifyFile := RemoveBlankMsgBox(MinifyFile)
 	If (RemoveAllMsgBoxCtrl.Value = "1")
 		MinifyFile := RemoveAllMsgBox(MinifyFile)
+	If (UseOTBCtrl.Value = "1")
+		MinifyFile := UseOTB(MinifyFile)
 	If (RemoveEmptyLinesCtrl.Value = "1")
 		MinifyFile := RemoveEmptyLines(MinifyFile)
+	If (RemoveTrailingSpacesCtrl.Value = "1")
+		MinifyFile := RemoveTrailingSpaces(MinifyFile)
     MinifiedFileName := StrReplace(MinifyFileName, ".ahk", ".min.ahk") ; This will behave strange if 2 .ahk is in the path
 	WriteFile(MinifyFile, MinifiedFileName)
 }
@@ -86,6 +98,15 @@ Multiline comments - Figure out why it doesnt work
 
 ShortenVariables(MinifyFile) {
 	; Skipped
+	/*
+Get variable names
+add full name and shortened to array
+next vaeiable check against array
+if found replace with shortened
+else make new
+if new var conflicts with shortened
+get second character
+*/
 }
 
 RemoveWhitespaces(MinifyFile) {
@@ -111,13 +132,26 @@ RemoveIndents(MinifyFile) {
 	Return MinifyFile
 }
 
+UseOTB(MinifyFile) {
+	;Skipped
+	; \R{
+	MinifyFile := RegexReplace(MinifyFile, "\R{", "{")
+	Return MinifyFile
+}
+
 RemoveEmptyLines(MinifyFile) {
 	; ^( |\t)*\K\R
 	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*\K\R")
 	Return MinifyFile
 }
 
-On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd)
+RemoveTrailingSpaces(MinifyFile) {
+	; \s*$
+	MinifyFile := RegexReplace(MinifyFile, "\s*$")
+	Return MinifyFile
+}
+
+On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) ; https://www.autohotkey.com/docs/v2/lib/Gui.htm#ExToolTip
 {
     static PrevHwnd := 0
     if (Hwnd != PrevHwnd)
