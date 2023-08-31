@@ -48,7 +48,7 @@ Minify(*) {
 		MinifyFile := RemoveEmptyLines(MinifyFile)
 	If (RemoveTrailingSpacesCtrl.Value = "1")
 		MinifyFile := RemoveTrailingSpaces(MinifyFile)
-    MinifiedFileName := StrReplace(MinifyFileName, ".ahk", ".min.ahk") ; This will behave strange if 2 .ahk is in the path
+    MinifiedFileName := RegexReplace(MinifyFileName, "\.ahk$", ".min.ahk") ; Use RegEx to avoid strange file paths
 	WriteFile(MinifyFile, MinifiedFileName)
 }
 
