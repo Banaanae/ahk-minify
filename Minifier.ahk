@@ -118,20 +118,20 @@ RemoveWhitespaces(MinifyFile) {
 }
 
 RemoveBlankMsgBox(MinifyFile) {
-	; ^\s*?MsgBox(\(\))?$
-	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(\))?$")
+	; ^\s*MsgBox(\(\))?$
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*MsgBox(\(\))?$")
 	Return MinifyFile
 }
 
 RemoveAllMsgBox(MinifyFile) {
-	; ^\s*?MsgBox(\(.*\))?( ".*")?$
-	MinifyFile := RegexReplace(MinifyFile, "m)^\s*?MsgBox(\(.*\))?( `".*`")?$")
+	; ^\s*MsgBox(\(.*\))?( ".*")?$
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*MsgBox(\(.*\))?( `".*`")?$")
 	Return MinifyFile
 }
 
 RemoveIndents(MinifyFile) {
-	; ^( |\t)*
-	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*")
+	; ^( |\t)+
+	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)+")
 	Return MinifyFile
 }
 
@@ -149,13 +149,12 @@ RemoveEmptyLines(MinifyFile) {
 }
 
 RemoveTrailingSpaces(MinifyFile) {
-	; \s*$
-	MinifyFile := RegexReplace(MinifyFile, "\s*$")
+	; \s+$
+	MinifyFile := RegexReplace(MinifyFile, "\s+$")
 	Return MinifyFile
 }
 
-On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) ; https://www.autohotkey.com/docs/v2/lib/Gui.htm#ExToolTip
-{
+On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) { ; https://www.autohotkey.com/docs/v2/lib/Gui.htm#ExToolTip
     static PrevHwnd := 0
     if (Hwnd != PrevHwnd)
     {
