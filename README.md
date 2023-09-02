@@ -11,6 +11,12 @@ Works using RegEx so it has the added benefit of easily being ported to other la
 3. Press "Select file and Minify" and follow the prompts.
 4. Your file will now be minified! (Unless it isn't, if this does happen make an [issue](https://github.com/Banaanae/ahk-minify/issues))
 
+## Roadmap
+
+* [ ] Finish remaining rules
+* [ ] Make online version with github pages
+* [ ] Start the cycle of fixing edge cases
+
 ## RegEx Explanations
 
 TODO Write this with summaries
