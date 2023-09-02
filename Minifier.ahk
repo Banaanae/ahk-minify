@@ -65,7 +65,7 @@ WriteFile(MinifyFile, MinifiedFileName) {
 			Goto("CheckWrite") ; Skips writing file to prevent endless loop
 		}
 	} Else {
-		UnknownErrorRes := MsgBox("Failed, received error code: " A_LastError "`nPlease report this on github`n`nWould you like to open the issue", "Failed", "Iconx")
+		UnknownErrorRes := MsgBox("Failed, received error code: " A_LastError "`nPlease report this on github`n`nWould you like to open the issue", "Failed", "Y/N Iconx")
 		If (UnknownErrorRes = "Yes") {
 			Run("https://github.com/Banaanae/ahk-minify/issues")
 		}
@@ -77,21 +77,24 @@ StripComments(MinifyFile) {
 Detect semicolon comments without picking them up in strings
 Do not match if " before ; ???
 
-Multiline comments - Figure out why it doesnt work
+Multiline comments - Fixed
 	*/
 
     ; Comment matching regex
 
     ; Semicolon based comments
 	; ;.*[^"\)]$
+	; ( |\t)*;.*[^`"\)]$
+	; (^| );.*
 
     ; /* */ based comments
     ; ^( |\t)*?\/\*(.*)?(\n.*)*\*\/
 	; ^( |\t)*?\/\*(.*\n)*?\*\/
 	MsgBox(MinifyFile)
-    MinifyFile := RegexReplace(MinifyFile, "m)( |\t)*;.*[^`"\)]$")
+    MinifyFile := RegexReplace(MinifyFile, "m)(^| );.*") ; Safe Rule, Doesn't remove ALL comments but doesn't remove noncomments
 	MsgBox(MinifyFile)
-	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*?\/\*(.*\n)*?\*\/", "") ; Not working
+	MinifyFile := RegexReplace(MinifyFile, "mU)^( |\t)*\/\*(.*\R)*\*\/", "") ; Removes all comments (that I know of)
+	MsgBox(A_LastError)
 	MsgBox(MinifyFile)
 	Return MinifyFile
 }
