@@ -40,15 +40,14 @@ Minify(*) {
 	}
     MinifyFile := FileRead(MinifyFileName)
 	If (RegexMatch(MinifyFile, "'") = 0)
-		SingleQuoteRes := MsgBox("Detected single quotes (') which don't have proper support yet`nThis is a crude check which probably contains false positives`n`nContinue?", "Warning", "Y/N Iconi") ; easy fix but i change regex too much
-		If (SingleQuoteRes = "No")
-			Return
+		If (MsgBox("Detected single quotes (`') which don't have proper support yet`nThis is a crude check which probably contains false positives`n`nContinue?", "Warning", "Y/N Iconi") = "No")
+			Return ; easy fix but i change regex too much
 	If (StripCommentsCtrl.Value = "1")
 		MinifyFile := StripComments(MinifyFile)
 	If (ShortenVariablesCtrl.Value = "1")
 		MsgBox("Not implemented, Skipping", "WIP", 48)
 	If (RemoveWhitespacesCtrl.Value = "1")
-		MsgBox("Not implemented, Skipping", "WIP", 48)
+		MinifyFile := RemoveWhitespaces(MinifyFile)
 	If (RemoveIndentsCtrl.Value = "1")
 		MinifyFile := RemoveIndents(MinifyFile)
 	If (RemoveBlankMsgBoxCtrl.Value = "1")
@@ -74,7 +73,10 @@ WriteFile(MinifyFile, MinifiedFileName) {
 	FileAppend(MinifyFile, MinifiedFileName)
 	CheckWrite:
 	If (A_LastError = 0) { ; File write successful
-		MsgBox("Success! Wrote the file to " MinifiedFileName "`nPlease ensure you keep the source as it sometimes removes too much`n`nWould you like you open the file in your ahk editor?", "Minification Success", "Y/N Iconi")
+		OpenMinifiedFileRes := MsgBox("Success! Wrote the file to " MinifiedFileName "`nPlease ensure you keep the source as it sometimes removes too much`n`nWould you like you open the file in Notepad?", "Minification Success", "Y/N Iconi")
+		If (OpenMinifiedFileRes = "Yes") {
+			Run("Notepad " MinifiedFileName) ; TODO: Open in default .ahk editor (avoid registry if possible)
+		}
 	} Else If (A_LastError = 183) { ; File already exists
 		OverwriteRes := MsgBox("Minified file with this name already exists`nDo you want to overwrite it?", "Warning!", "Y/N Icon!")
 		If (OverwriteRes = "Yes") {
@@ -148,7 +150,6 @@ get second character
 
 RemoveWhitespaces(MinifyFile) { ; Probably need to move to after OTB
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Removing Whitespaces"
-	; Skipped
 	; ([~><=!:\+\-\*\/\.&|^]+==?)
 	; \) {
 	/*
@@ -161,6 +162,7 @@ Functions and if statements (and anything similar)
 	If (WIPContRes = "No")
 		Return MinifyFile
 	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){\s*")
+	MinifyFile := RegexReplace(MinifyFile, "( |\t)+(?=[~><=!:\+\-\*\/\.&|^]+==?)|(?<=[~><=!:\+\-\*\/\.&|^])( |\t)+") ; https://stackoverflow.com/a/67708142
 	Return MinifyFile
 }
 
