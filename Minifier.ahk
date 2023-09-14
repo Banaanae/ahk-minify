@@ -137,7 +137,7 @@ Multiline comments - Fixed
 ShortenVariables(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Shortening Variables"
 	; Skipped
-	/*
+	/* don't even bother with dynamic variables
 Get variable names
 add full name and shortened to array
 next vaeiable check against array
@@ -161,8 +161,9 @@ Functions and if statements (and anything similar)
 	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "WIP", "Y/N")
 	If (WIPContRes = "No")
 		Return MinifyFile
-	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){\s*")
+	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){")
 	MinifyFile := RegexReplace(MinifyFile, "( |\t)+(?=[~><=!:\+\-\*\/\.&|^]+==?)|(?<=[~><=!:\+\-\*\/\.&|^])( |\t)+") ; https://stackoverflow.com/a/67708142
+	; [^`]",\K( |\t)+ (Incorrectly matches '", k')
 	Return MinifyFile
 }
 
@@ -210,7 +211,7 @@ OR
 
 */
 	; MsgBox
-	RegexMatch(MinifyFile, "i)MsgBox(\(|\s+).*\K`".*`"(,\s*\K(0x\d+))?", &OptimiseMsgBox) ; Matches last ; MsgBox(?:\(|\s+).*\K`".*`"(?:,\s*\K(0x\d+))?
+	RegexMatch(MinifyFile, "i)MsgBox(?:\(|\s+).*\K`".*`"(?:,\s*\K(0x\d+))?", &OptimiseMsgBox) ; Matches last ; MsgBox(?:\(|\s+).*\K`".*`"(?:,\s*\K(0x\d+))?
 	MsgBox(OptimiseMsgBox[0])
 	MinifyFile := MinifyFile
 	Return MinifyFile
