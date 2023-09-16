@@ -1,0 +1,33 @@
+name: Minify Issue
+description: Report an issue related to minifying files
+body:
+  - type: checkboxes
+    attributes:
+      label: Rules used
+      description: To aid in figuring out issues in rules please tick the rules used in the problematic minification
+      options:
+        - label: Comment Stripper
+        - label: Shorten Variables
+        - label: Remove Whitespaces
+        - label: Remove Indents
+        - label: Remove Blank MsgBox
+        - label: Remove All MsgBox
+        - label: Optimise Options
+        - label: Use OTB
+        - label: Use Shorthand
+        - label: Remove Empty Lines
+        - label: Remove Trailing Spaces
+
+  - type: textarea
+    attributes:
+      label: Example
+      description: Please paste in the problematic code
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected code
+      description: Please paste in the expected code, either the source code or debugged code
+    validations:
+      required: true
