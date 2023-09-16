@@ -2,14 +2,14 @@ MinifyGui := Gui(, "AutoHotKey Minifier - Status: Idle")
 StripCommentsCtrl := MinifyGui.AddCheckBox("x10 y10 w100 h30", "Strip Comments")
 StripCommentsCtrl.ToolTip := "(WIP) Removes inline and multiline comments"
 ShortenVariablesCtrl := MinifyGui.AddCheckBox("x120 y10 w100 h30", "Shorten Variables")
-ShortenVariablesCtrl.ToolTip := "(NOT DONE) Attempts to shorten variable names"
-RemoveWhitespacesCtrl := MinifyGui.AddCheckBox("x230 y10 w100 h30", "Remove whitespaces")
+ShortenVariablesCtrl.ToolTip := "(WIP) Attempts to shorten variable names"
+RemoveWhitespacesCtrl := MinifyGui.AddCheckBox("x230 y10 w100 h30", "Remove Whitespaces")
 RemoveWhitespacesCtrl.ToolTip := "(WIP) Removes extra whitespaces in methods, variable declarations, etc"
 RemoveIndentsCtrl := MinifyGui.AddCheckBox("x340 y10 w100 h30", "Remove Indents")
 RemoveIndentsCtrl.ToolTip := "Removes spaces and tabs before lines of code"
-RemoveBlankMsgBoxCtrl := MinifyGui.AddCheckBox("x10 y50 w100 h30", "Remove blank MsgBox")
+RemoveBlankMsgBoxCtrl := MinifyGui.AddCheckBox("x10 y50 w100 h30", "Remove Blank MsgBox")
 RemoveBlankMsgBoxCtrl.ToolTip := "Removes blank message boxes"
-RemoveAllMsgBoxCtrl := MinifyGui.AddCheckBox("x120 y50 w100 h30", "Remove all MsgBox")
+RemoveAllMsgBoxCtrl := MinifyGui.AddCheckBox("x120 y50 w100 h30", "Remove All MsgBox")
 RemoveAllMsgBoxCtrl.ToolTip := "Removes all message boxes including blank"
 OptimiseOptionsCtrl := MinifyGui.AddCheckBox("x230 y50 w100 h30", "Optimise Options")
 OptimiseOptionsCtrl.ToolTip := "(NOT DONE) Replace text and hex based options with decimal"
@@ -17,11 +17,11 @@ UseOTBCtrl := MinifyGui.AddCheckBox("x340 y50 w100 h30", "Use OTB")
 UseOTBCtrl.ToolTip := "(WIP) Forces one true brace, Only supports {}"
 UseShorthandCtrl := MinifyGui.AddCheckBox("x10 y90 w100 h30", "Use Shorthand")
 UseShorthandCtrl.ToolTip := "(NOT DONE) Replaces code with its shorthand equivilent"
-RemoveEmptyLinesCtrl := MinifyGui.AddCheckBox("x120 y90 w100 h30", "Remove empty lines")
+RemoveEmptyLinesCtrl := MinifyGui.AddCheckBox("x120 y90 w100 h30", "Remove Empty Lines")
 RemoveEmptyLinesCtrl.ToolTip := "Removes empty lines, recommended to use as most rules because they do not remove newline"
-RemoveTrailingSpacesCtrl := MinifyGui.AddCheckBox("x230 y90 w100 h30", "Remove trailing spaces")
+RemoveTrailingSpacesCtrl := MinifyGui.AddCheckBox("x230 y90 w100 h30", "Remove Trailing Spaces")
 RemoveTrailingSpacesCtrl.ToolTip := "Removes trailing whitespaces and tabs"
-HideCtrl := MinifyGui.AddCheckBox("x340 y90 w100 h30 Check3", "Hide unfinished rules")
+HideCtrl := MinifyGui.AddCheckBox("x340 y90 w100 h30 Check3", "Hide Unfinished Rules")
 HideCtrl.OnEvent("Click", Hide)
 HideCtrl.ToolTip := "Unchecked: Show all, Check: Only complete, Indeterminate: Complete and partially Complete"
 ; OneLineCtrl := MinifyGui.AddCheckBox("where emptylines is now shift others, uncomment when hide is removed", "Reduce SLOC")
@@ -119,7 +119,7 @@ Multiline comments - Fixed
 	; ^( |\t)*?\/\*(.*\n)*?\*\/
 	; ^( |\t)*/\*.*\*/
 	; MsgBox(MinifyFile)
-	WIPContRes := MsgBox("Not all inline comments will be removed,`nJust comments at the start on a line (excluding spaces and tabs)`n`nDo you want to continue?", "WIP", "Y/N")
+	WIPContRes := MsgBox("Not all inline comments will be removed,`nJust comments at the start on a line (excluding spaces and tabs)`n`nDo you want to continue?", "Cpmment Stripper", "Y/N")
 	If (WIPContRes = "No")
 		Return MinifyFile
     MinifyFile := RegexReplace(MinifyFile, "m)^\s*;.*") ; Safe Rule, Doesn't remove ALL comments but doesn't remove noncomments
@@ -161,7 +161,7 @@ Functions and if statements (and anything similar)
 
 TODO: Fix matching in string
 */
-	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "WIP", "Y/N")
+	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "Remove Whitespaces", "Y/N")
 	If (WIPContRes = "No")
 		Return MinifyFile
 	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){")
@@ -193,7 +193,7 @@ RemoveIndents(MinifyFile) {
 
 OptimiseOptions(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Optimising Options"
-	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "WIP", "Y/N")
+	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "Optimise Options", "Y/N")
 	If (WIPContRes = "No")
 		Return MinifyFile
 	; Skipped
@@ -229,7 +229,7 @@ UseOTB(MinifyFile) {
 
 UseShorthand(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Replacing non-shorthand"
-	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "WIP", "Y/N")
+	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "Use Shorthand", "Y/N")
 	If (WIPContRes = "No")
 		Return MinifyFile
 /*
@@ -253,6 +253,14 @@ RemoveTrailingSpaces(MinifyFile) {
 	; \s+$
 	MinifyFile := RegexReplace(MinifyFile, "\s+$")
 	Return MinifyFile
+}
+
+OneLine(MinifyFile) {
+/*
+^[^(] 
+Replace with
+( and $)
+*/
 }
 
 On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) { ; https://www.autohotkey.com/docs/v2/lib/Gui.htm#ExToolTip
