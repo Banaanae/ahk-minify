@@ -1,2 +1,5 @@
 # Minified files
 *.min.ahk
+
+# Remove minified files script
+removeMinifiedFiles.ahk

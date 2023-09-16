@@ -59,7 +59,7 @@ Minify(*) {
 	If (UseOTBCtrl.Value = "1")
 		MinifyFile := UseOTB(MinifyFile)
 	If (UseShorthandCtrl.Value = "1")
-		MsgBox("Not implemented, Skipping", "WIP", 48)
+		MinifyFile := UseShorthand(MinifyFile)
 	If (RemoveEmptyLinesCtrl.Value = "1")
 		MinifyFile := RemoveEmptyLines(MinifyFile)
 	If (RemoveTrailingSpacesCtrl.Value = "1")
@@ -158,12 +158,14 @@ Remove spaces:
 Before and after declarations
 After commas in methods
 Functions and if statements (and anything similar) 
+
+TODO: Fix matching in string
 */
 	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "WIP", "Y/N")
 	If (WIPContRes = "No")
 		Return MinifyFile
 	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){")
-	MinifyFile := RegexReplace(MinifyFile, "( |\t)+(?=[~><=!:\+\-\*\/\.&|^]+==?)|(?<=[~><=!:\+\-\*\/\.&|^])( |\t)+") ; https://stackoverflow.com/a/67708142
+	MinifyFile := RegexReplace(MinifyFile, "( |\t)+(?=[~><=!:\+\-\*\/\.&|^]+==?|=)|(?<=[~><=!:\+\-\*\/\.&|^])( |\t)+") ; https://stackoverflow.com/a/67708142
 	; [^`]",\K( |\t)+ (Incorrectly matches '", k')
 	Return MinifyFile
 }
@@ -227,10 +229,15 @@ UseOTB(MinifyFile) {
 
 UseShorthand(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Replacing non-shorthand"
+	WIPContRes := MsgBox("This is still a WIP`n`nDo you want to continue?", "WIP", "Y/N")
+	If (WIPContRes = "No")
+		Return MinifyFile
 /*
 Var += 1 -> Var++
 RegexMatch("abc", "[abc]") -> "abc" ~= "[abc]"
 */
+	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\+=", "++")
+	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\+=", "--")
 	Return MinifyFile
 }
 
@@ -268,10 +275,10 @@ On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) { ; https://www.autohotkey.com/docs/v
 
 Hide(*) { ; Very bad temp func
 	If (HideCtrl.Value = 0) {
-		ShortenVariablesCtrl.Visible := OptimiseOptionsCtrl.Visible := UseShorthandCtrl.Visible := "1"
+		ShortenVariablesCtrl.Visible := OptimiseOptionsCtrl.Visible := "1"
 	} Else If (HideCtrl.Value = 1) {
 		StripCommentsCtrl.Visible := ShortenVariablesCtrl.Visible := RemoveWhitespacesCtrl.Visible := OptimiseOptionsCtrl.Visible := UseOTBCtrl.Visible := UseShorthandCtrl.Visible := "0"
 	} Else {
-		StripCommentsCtrl.Visible := RemoveWhitespacesCtrl.Visible := UseOTBCtrl.Visible := "1"
+		StripCommentsCtrl.Visible := RemoveWhitespacesCtrl.Visible := UseOTBCtrl.Visible := UseShorthandCtrl.Visible := "1"
 	}
 }
