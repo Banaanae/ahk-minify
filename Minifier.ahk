@@ -117,6 +117,7 @@ Multiline comments - Fixed
     ; /* */ based comments
     ; ^( |\t)*?\/\*(.*)?(\n.*)*\*\/
 	; ^( |\t)*?\/\*(.*\n)*?\*\/
+	; ^( |\t)*/\*.*\*/
 	; MsgBox(MinifyFile)
 	WIPContRes := MsgBox("Not all inline comments will be removed,`nJust comments at the start on a line (excluding spaces and tabs)`n`nDo you want to continue?", "WIP", "Y/N")
 	If (WIPContRes = "No")
@@ -128,7 +129,7 @@ Multiline comments - Fixed
 	;Loop (Semicolon.Count)
 	; From here count " etc, if odd remove ansudna
 	; MsgBox(MinifyFile)
-	MinifyFile := RegexReplace(MinifyFile, "mU)^( |\t)*\/\*(.*\R)*\*\/", "") ; Removes all comments (that I know of)
+	MinifyFile := RegexReplace(MinifyFile, "msU)^( |\t)*/\*.*\*/") ; Removes all comments (that I know of)
 	; MsgBox(A_LastError)
 	; MsgBox(MinifyFile)
 	Return MinifyFile
