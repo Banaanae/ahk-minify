@@ -97,41 +97,16 @@ WriteFile(MinifyFile, MinifiedFileName) {
 StripComments(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Stripping Comments"
 	/*
-Detect semicolon comments without picking them up in strings
-Do not match if " before ; ???
-OR
-Get all ;
-Check if *ODD* number of unescaped " ' or ( (maybe {)
-(^| );.* if ^ fails
+    Semicolon based comments
+	\B;.*
 
-Multiline comments - Fixed
+    /* */ based comments
+	^( |\t)*/\*.*\* /
+	(No second space in second regex, just to make comment work)
 	*/
 
-    ; Comment matching regex
-
-    ; Semicolon based comments
-	; ;.*[^"\)]$
-	; ( |\t)*;.*[^`"\)]$
-	; (^| );.*
-
-    ; /* */ based comments
-    ; ^( |\t)*?\/\*(.*)?(\n.*)*\*\/
-	; ^( |\t)*?\/\*(.*\n)*?\*\/
-	; ^( |\t)*/\*.*\*/
-	; MsgBox(MinifyFile)
-	WIPContRes := MsgBox("Not all inline comments will be removed,`nJust comments at the start on a line (excluding spaces and tabs)`n`nDo you want to continue?", "Cpmment Stripper", "Y/N")
-	If (WIPContRes = "No")
-		Return MinifyFile
-    MinifyFile := RegexReplace(MinifyFile, "m)^\s*;.*") ; Safe Rule, Doesn't remove ALL comments but doesn't remove noncomments
-	RegexMatch(MinifyFile, ".*;", &SemicolonLines)
-	MsgBox(SemicolonLines[])
-	MsgBox A_LastError
-	;Loop (Semicolon.Count)
-	; From here count " etc, if odd remove ansudna
-	; MsgBox(MinifyFile)
+    MinifyFile := RegexReplace(MinifyFile, "\B;.*") ; New rule hopefully matches all ; comments
 	MinifyFile := RegexReplace(MinifyFile, "msU)^( |\t)*/\*.*\*/") ; Removes all comments (that I know of)
-	; MsgBox(A_LastError)
-	; MsgBox(MinifyFile)
 	Return MinifyFile
 }
 
@@ -236,8 +211,8 @@ UseShorthand(MinifyFile) {
 Var += 1 -> Var++
 RegexMatch("abc", "[abc]") -> "abc" ~= "[abc]"
 */
-	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\+=", "++")
-	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\+=", "--")
+	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\+=( |\t)*1", "++")
+	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\-=( |\t)*1", "--")
 	Return MinifyFile
 }
 
@@ -285,8 +260,8 @@ Hide(*) { ; Very bad temp func
 	If (HideCtrl.Value = 0) {
 		ShortenVariablesCtrl.Visible := OptimiseOptionsCtrl.Visible := "1"
 	} Else If (HideCtrl.Value = 1) {
-		StripCommentsCtrl.Visible := ShortenVariablesCtrl.Visible := RemoveWhitespacesCtrl.Visible := OptimiseOptionsCtrl.Visible := UseOTBCtrl.Visible := UseShorthandCtrl.Visible := "0"
+		ShortenVariablesCtrl.Visible := RemoveWhitespacesCtrl.Visible := OptimiseOptionsCtrl.Visible := UseOTBCtrl.Visible := UseShorthandCtrl.Visible := "0"
 	} Else {
-		StripCommentsCtrl.Visible := RemoveWhitespacesCtrl.Visible := UseOTBCtrl.Visible := UseShorthandCtrl.Visible := "1"
+		RemoveWhitespacesCtrl.Visible := UseOTBCtrl.Visible := UseShorthandCtrl.Visible := "1"
 	}
 }
