@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300&display=swap');
+
+body {
+    height: 100%;
+}
+
+h1, .exo {
+    font-family: 'Exo 2', sans-serif;
+}
+
+textarea {
+    width: 49%;
+    height: 78vh;
+}

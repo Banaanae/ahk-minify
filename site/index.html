@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AHK Minifier</title>
+        <link rel="stylesheet" href="./index.css" />
+    </head>
+    <body>
+        <h1>AHK Minifier v0.4.2</h1>
+        <form class="exo">
+            <textarea id="input" name="Input"></textarea>
+            <textarea id="output" name="Output"></textarea>
+            <br>
+            <input id="live" type="checkbox"><label> Live minification</label>
+            <button type="button" class="exo" id="minify" style="float: right;">Minify</button>
+            <details id="rules">
+                <summary>Rules</summary>
+                <input id="cs" type="checkbox" checked><label for="cs">Comment Stripper</label><br>
+                <input id="sv" type="checkbox"><label for="sv">Shorten Variables</label><br>
+                <input id="rw" type="checkbox"><label for="rw">Remove Whitespaces</label><br>
+                <input id="ri" type="checkbox" checked><label for="ri">Remove Indents</label><br>
+                <input id="rbm" type="checkbox"><label for="rbm">Remove Blank MsgBox</label><br>
+                <input id="ram" type="checkbox"><label for="ram">Remove All MsgBox</label><br>
+                <input id="oo" type="checkbox"><label for="oo">Optimise Options</label><br>
+                <input id="uo" type="checkbox"><label for="uo">Use OTB</label><br>
+                <input id="us" type="checkbox" checked><label for="us">Use Shorthand</label><br>
+                <input id="rel" type="checkbox" checked><label for="rel">Remove Empty Lines</label><br>
+                <input id="rts" type="checkbox" checked><label for="rts">Remove Trailing Spaces</label>
+            </details>                
+        </form>
+        <script src="./js/minify.js"></script>
+    </body>
+</html>
