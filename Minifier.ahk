@@ -1,8 +1,8 @@
 MinifyGui := Gui(, "AutoHotKey Minifier - Status: Idle")
 StripCommentsCtrl := MinifyGui.AddCheckBox("x10 y10 w100 h30", "Strip Comments")
-StripCommentsCtrl.ToolTip := "(WIP) Removes inline and multiline comments"
+StripCommentsCtrl.ToolTip := "Removes inline and multiline comments"
 ShortenVariablesCtrl := MinifyGui.AddCheckBox("x120 y10 w100 h30", "Shorten Variables")
-ShortenVariablesCtrl.ToolTip := "(WIP) Attempts to shorten variable names"
+ShortenVariablesCtrl.ToolTip := "(NOT DONE) Attempts to shorten variable names"
 RemoveWhitespacesCtrl := MinifyGui.AddCheckBox("x230 y10 w100 h30", "Remove Whitespaces")
 RemoveWhitespacesCtrl.ToolTip := "(WIP) Removes extra whitespaces in methods, variable declarations, etc"
 RemoveIndentsCtrl := MinifyGui.AddCheckBox("x340 y10 w100 h30", "Remove Indents")
@@ -16,7 +16,7 @@ OptimiseOptionsCtrl.ToolTip := "(NOT DONE) Replace text and hex based options wi
 UseOTBCtrl := MinifyGui.AddCheckBox("x340 y50 w100 h30", "Use OTB")
 UseOTBCtrl.ToolTip := "(WIP) Forces one true brace, Only supports {}"
 UseShorthandCtrl := MinifyGui.AddCheckBox("x10 y90 w100 h30", "Use Shorthand")
-UseShorthandCtrl.ToolTip := "(NOT DONE) Replaces code with its shorthand equivilent"
+UseShorthandCtrl.ToolTip := "(WIP) Replaces code with its shorthand equivilent"
 RemoveEmptyLinesCtrl := MinifyGui.AddCheckBox("x120 y90 w100 h30", "Remove Empty Lines")
 RemoveEmptyLinesCtrl.ToolTip := "Removes empty lines, recommended to use as most rules because they do not remove newline"
 RemoveTrailingSpacesCtrl := MinifyGui.AddCheckBox("x230 y90 w100 h30", "Remove Trailing Spaces")
@@ -101,12 +101,12 @@ StripComments(MinifyFile) {
 	\B;.*
 
     /* */ based comments
-	^( |\t)*/\*.*\* /
+	^\s*/\*.*\* /
 	(No second space in second regex, just to make comment work)
 	*/
 
     MinifyFile := RegexReplace(MinifyFile, "\B;.*") ; New rule hopefully matches all ; comments
-	MinifyFile := RegexReplace(MinifyFile, "msU)^( |\t)*/\*.*\*/") ; Removes all comments (that I know of)
+	MinifyFile := RegexReplace(MinifyFile, "msU)^\s*/\*.*\*/") ; Removes all comments (that I know of)
 	Return MinifyFile
 }
 
@@ -140,8 +140,8 @@ TODO: Fix matching in string
 	If (WIPContRes = "No")
 		Return MinifyFile
 	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){")
-	MinifyFile := RegexReplace(MinifyFile, "( |\t)+(?=[~><=!:\+\-\*\/\.&|^]+==?|=)|(?<=[~><=!:\+\-\*\/\.&|^])( |\t)+") ; https://stackoverflow.com/a/67708142
-	; [^`]",\K( |\t)+ (Incorrectly matches '", k')
+	MinifyFile := RegexReplace(MinifyFile, "\s+(?=[~><=!:\+\-\*\/\.&|^]+==?|=)|(?<=[~><=!:\+\-\*\/\.&|^])\s+") ; https://stackoverflow.com/a/67708142
+	; [^`]",\K\s+ (Incorrectly matches '", k')
 	Return MinifyFile
 }
 
@@ -155,14 +155,14 @@ RemoveBlankMsgBox(MinifyFile) { ; Add similar?
 RemoveAllMsgBox(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Removing all MsgBox"
 	; ^\s*MsgBox(\(.*\))?( ".*")?$
-	MinifyFile := RegexReplace(MinifyFile, "m)^\s*MsgBox(\(.*\))?( `".*`")?$")
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*MsgBox(\(.*\))?( ['`"].*['`"])?$")
 	Return MinifyFile
 }
 
 RemoveIndents(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Removing Indents"
-	; ^( |\t)+
-	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)+")
+	; ^\s+
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s+")
 	Return MinifyFile
 }
 
@@ -211,15 +211,15 @@ UseShorthand(MinifyFile) {
 Var += 1 -> Var++
 RegexMatch("abc", "[abc]") -> "abc" ~= "[abc]"
 */
-	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\+=( |\t)*1", "++")
-	MinifyFile := RegexReplace(MinifyFile, "( |\t)*\-=( |\t)*1", "--")
+	MinifyFile := RegexReplace(MinifyFile, "\s*\+=\s*1", "++")
+	MinifyFile := RegexReplace(MinifyFile, "\s*\-=\s*1", "--")
 	Return MinifyFile
 }
 
 RemoveEmptyLines(MinifyFile) {
 	MinifyGui.Title := "AutoHotKey Minifier - Status: Removing empty lines"
-	; ^( |\t)*\K\R
-	MinifyFile := RegexReplace(MinifyFile, "m)^( |\t)*\K\R")
+	; ^\s*\K\R
+	MinifyFile := RegexReplace(MinifyFile, "m)^\s*\K\R")
 	Return MinifyFile
 }
 
