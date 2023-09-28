@@ -57,7 +57,7 @@ function minify() {
 
 function commentStripper(minification) {
     if (!cs.checked) return minification;
-    let min = minification.replace(/\B;.*/gm, '');
+    let min = minification.replace(/\B;.*/g, '');
     min = min.replace(/^\s*\/\*.*?\*\//gms, '');
     return min;
 };
