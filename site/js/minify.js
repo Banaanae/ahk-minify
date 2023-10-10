@@ -15,28 +15,19 @@ let us = document.getElementById('us');
 let rel = document.getElementById('rel');
 let rts = document.getElementById('rts');
 
-input.addEventListener('keyup', premin);
-input.addEventListener('cut', premin); // Doesn't detect RMB -> Cut until second use, same with paste (atleast on FF)
-input.addEventListener('paste', premin);
+['keyup', 'cut', 'paste'].forEach( event => // https://stackoverflow.com/a/43021296
+    input.addEventListener(event, premin) // Cut and Paste don't detect RMB -> Cut/Paste until second use (atleast on FF)
+);
 minifyBtn.addEventListener('click', minify);
 
-cs.addEventListener('click', premin);
-sv.addEventListener('click', premin);
-rw.addEventListener('click', premin);
-ri.addEventListener('click', premin);
-rbm.addEventListener('click', premin);
-ram.addEventListener('click', premin);
-oo.addEventListener('click', premin);
-uo.addEventListener('click', premin);
-us.addEventListener('click', premin);
-rel.addEventListener('click', premin);
-rts.addEventListener('click', premin);
-
-live.addEventListener('click', premin);
+let rules = document.querySelectorAll('input'); // https://stackoverflow.com/a/40956816
+rules.forEach(function(rule) {
+    rule.addEventListener('click', premin);
+});
 
 function premin() {
-    if (!live.checked) return
-    minify()
+    if (!live.checked) return;
+    minify();
 }
 
 function minify() {
