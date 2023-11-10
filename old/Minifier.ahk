@@ -45,7 +45,7 @@ Minify(*) {
 	If (StripCommentsCtrl.Value = "1")
 		MinifyFile := StripComments(MinifyFile)
 	If (ShortenVariablesCtrl.Value = "1")
-		MsgBox("Not implemented, Skipping", "WIP", 48)
+		MsgBox("Not implemented, Skipping", "Shorten Variables", 48)
 	If (RemoveWhitespacesCtrl.Value = "1")
 		MinifyFile := RemoveWhitespaces(MinifyFile)
 	If (RemoveIndentsCtrl.Value = "1")
@@ -140,7 +140,8 @@ TODO: Fix matching in string
 	If (WIPContRes = "No")
 		Return MinifyFile
 	MinifyFile := RegexReplace(MinifyFile, "\)\s+{", "){")
-	MinifyFile := RegexReplace(MinifyFile, "\s+(?=[~><=!:\+\-\*\/\.&|^]+==?|=)|(?<=[~><=!:\+\-\*\/\.&|^])\s+") ; https://stackoverflow.com/a/67708142
+	MinifyFile := RegexReplace(MinifyFile, "\s+(?=[~><=!:\+\-\*\/\.&|^]+==?|=)|(?<=[~><=!:\+\-\*\/\.&|^]=)\s+") ; https://stackoverflow.com/a/67708142
+	; ^^^ Doesn't match single = (like in if statement)
 	; [^`]",\K\s+ (Incorrectly matches '", k')
 	Return MinifyFile
 }
@@ -214,6 +215,7 @@ RegexMatch("abc", "[abc]") -> "abc" ~= "[abc]"
 	MinifyFile := RegexReplace(MinifyFile, "\s*\+=\s*1", "++")
 	MinifyFile := RegexReplace(MinifyFile, "\s*\-=\s*1", "--")
 	Return MinifyFile
+	; (.*:=\s*)(""|'')\n
 }
 
 RemoveEmptyLines(MinifyFile) {
