@@ -15,12 +15,11 @@ let us = document.getElementById('us');
 let rel = document.getElementById('rel');
 let rts = document.getElementById('rts');
 
-['keyup', 'cut', 'paste'].forEach( event => // https://stackoverflow.com/a/43021296
-    input.addEventListener(event, premin) // Cut and Paste don't detect RMB -> Cut/Paste until second use (atleast on FF)
-);
+input.setAttribute('onchange', 'premin()') // Add here to avoid DOM loading issues
+
 minifyBtn.addEventListener('click', minify);
 
-let rules = document.querySelectorAll('input'); // https://stackoverflow.com/a/40956816
+let rules = document.querySelectorAll('input:not(#debug)'); // https://stackoverflow.com/a/40956816
 rules.forEach(function(rule) {
     rule.addEventListener('click', premin);
 });
@@ -62,7 +61,7 @@ function shortVariables(minification) {
 function removeWhitespaces(minification) {
     if (!rw.checked) return minification;
     let min = minification.replace(/\)\s+{/g, '){');
-    min = min.replace(/\s+(?=[~><=!:\+\-\*\/\.&|^]+==?|=)|(?<=[~><=!:\+\-\*\/\.&|^])\s+/g, '');
+    min = min.replace(/\s+([~><=!:\+\-\*\/\.&|^]+==?|=)\s+/g, '$1');
     return min;
 };
 
@@ -100,6 +99,7 @@ function useShorthand(minification) {
     if (!us.checked) return minification;
     let min = minification.replace(/\s*\+=\s*1$/gm, '++');
     min = min.replace(/\s*-=\s*1$/gm, '--');
+    min = min.replace(/(.*){\n(.*)\n}/g, '$1\n$2');
     return min;
 };
 
@@ -114,3 +114,7 @@ function removeTrailingSpaces(minification) {
     let min = minification.replace(/\s+$/g, '');
     return min;
 };
+
+function lessLines(minification) { // Will try and reduce the amount of lines
+
+}
