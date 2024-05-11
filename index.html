@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="./index.css" />
     </head>
     <body>
-        <h1>AHK Minifier v0.4.2</h1>
+        <h1>AHK Minifier v0.4.3</h1>
         <form class="exo">
             <textarea id="input" spellcheck="false" name="Input"></textarea>
             <textarea id="output" spellcheck="false" name="Output"></textarea>
@@ -26,7 +26,8 @@
                 <span title="(WIP) Replaces code with its shorthand equivilent"><input id="us" type="checkbox" checked><label for="us">Use Shorthand</label></span><br>
                 <span title="Removes empty lines, recommended to use as most rules because they do not remove newline"><input id="rel" type="checkbox" checked><label for="rel">Remove Empty Lines</label></span><br>
                 <span title="Removes trailing whitespaces and tabs"><input id="rts" type="checkbox" checked><label for="rts">Remove Trailing Spaces</label></span>
-            </details>                
+                <span title="(NOT DONE) Reduces total line count"><input id="rlc" type="checkbox" disabled><label for="rlc">Reduce line count</label></span>
+            </details>
         </form>
         <script src="./js/minify.js"></script>
     </body>

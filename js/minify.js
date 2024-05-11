@@ -14,8 +14,10 @@ let uo = document.getElementById('uo');
 let us = document.getElementById('us');
 let rel = document.getElementById('rel');
 let rts = document.getElementById('rts');
+let rlc = document.getElementById('rlc');
 
-input.setAttribute('onchange', 'premin()') // Add here to avoid DOM loading issues
+//input.setAttribute('onchange', 'premin()') // Add here to avoid DOM loading issues
+input.addEventListener('change', premin)
 
 minifyBtn.addEventListener('click', minify);
 
@@ -42,6 +44,7 @@ function minify() {
     minification = useShorthand(minification);
     minification = removeEmptyLines(minification);
     minification = removeTrailingSpaces(minification);
+    //minification = reduceLineCount(minification);
     output.value = minification; // Output to second textarea
 };
 
@@ -62,6 +65,8 @@ function removeWhitespaces(minification) {
     if (!rw.checked) return minification;
     let min = minification.replace(/\)\s+{/g, '){');
     min = min.replace(/\s+([~><=!:\+\-\*\/\.&|^]+==?|=)\s+/g, '$1');
+    min = min.replace(/^(\s*)(if|while)\s*?\(/gmi, '$1$2(')
+    min = min.replace(/^([^"']*\()\s*/gm, '$1') // WIP Rule: Only removes whitespace before first param in funcs
     return min;
 };
 
@@ -100,6 +105,7 @@ function useShorthand(minification) {
     let min = minification.replace(/\s*\+=\s*1$/gm, '++');
     min = min.replace(/\s*-=\s*1$/gm, '--');
     min = min.replace(/(.*){\n(.*)\n}/g, '$1\n$2');
+    min = min.replace(/(\s*.*)\.Add\("(ActiveX|Button|CheckBox|ComboBox|Custom|DateTime|DropDownList|DDL|Edit|GroupBox|Hotkey|Link|ListBox|ListView|MonthCal|Picture|Pic|Progress|Radio|Slider|StatusBar|Tab|Tab2|Tab3|Text|TreeView|UpDown)",/gmi, '$1.Add$2(')
     return min;
 };
 
@@ -115,6 +121,8 @@ function removeTrailingSpaces(minification) {
     return min;
 };
 
-function lessLines(minification) { // Will try and reduce the amount of lines
-
+function reduceLineCount(minification) { // Will try and reduce the amount of lines
+    if (!rlc.checked) return minification;
+    let min = minification.replace(/temp/g, '');
+    return min;
 }
