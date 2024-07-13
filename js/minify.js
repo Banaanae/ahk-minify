@@ -51,7 +51,7 @@ function minify() {
 function commentStripper(minification) {
     if (!cs.checked) return minification;
     let min = minification.replace(/\B;.*/g, '');
-    min = min.replace(/^\s*\/\*.*?\*\//gms, '');
+    min = min.replace(/^\s*\/\*((\S\*\/\S)|.)*?\*\//gms, ''); // TODO: Still fails https://regex101.com/r/KTXStY/1
     return min;
 };
 
@@ -106,7 +106,7 @@ function useShorthand(minification) {
     if (!us.checked) return minification;
     let min = minification.replace(/\s*\+=\s*1$/gm, '++');
     min = min.replace(/\s*-=\s*1$/gm, '--');
-    min = min.replace(/(.*){\n(.*)\n}/g, '$1\n$2');
+    min = min.replace(/(\s*if|while|for|loop(\s*|\().*?){\n(.*)\n}/gmi, '$1\n$2');
     min = min.replace(/(\s*.*)\.Add\("(ActiveX|Button|CheckBox|ComboBox|Custom|DateTime|DropDownList|DDL|Edit|GroupBox|Hotkey|Link|ListBox|ListView|MonthCal|Picture|Pic|Progress|Radio|Slider|StatusBar|Tab|Tab2|Tab3|Text|TreeView|UpDown)",/gmi, '$1.Add$2(')
     return min;
 };
