@@ -39,7 +39,7 @@ function minify() {
     minification = removeIndents(minification);
     minification = removeBlankMsgBox(minification);
     minification = removeAllMsgBox(minification);
-    //minification = optimiseOptions(minification);
+    minification = optimiseOptions(minification);
     minification = useOtb(minification);
     minification = useShorthand(minification);
     minification = removeEmptyLines(minification);
@@ -78,19 +78,21 @@ function removeIndents(minification) {
 
 function removeBlankMsgBox(minification) {
     if (!rbm.checked) return minification;
-    let min = minification.replace(/^\s*MsgBox(\(\))?$/gm, '');
+    let min = minification.replace(/^\s*MsgBox(\(\))?$/gmi, '');
     return min;
 };
 
 function removeAllMsgBox(minification) {
     if (!ram.checked) return minification;
-    let min = minification.replace(/^\s*MsgBox(\(.*\))?( ['"].*['"])?$/gm, '');
+    let min = minification.replace(/^\s*MsgBox(\(.*\))?( ['"].*['"])?$/gmi, '');
     return min;
 };
 
 function optimiseOptions(minification) {
     if (!oo.checked) return minification;
-    let min = minification.replace(/temp/g, '');
+    //console.log(minification.replace(/(?<=MsgBox.*,\s*)(0x\d+)(?=\)|$)/gmi, '$1'))
+    //let min = minification.replace(/(MsgBox.*,\s*)(0x\d+)(\)|$)/gmi, '$1' + parseInt(minification.replace(/(?<=MsgBox.*,\s*)(0x\d+)(?=\)|$)/gmi, '$1')) + '$3');
+    let min = minification.replace(/((^| )Click( |\().*)Relative(.*$)/gmi, '$1Rel$4')
     return min;
 };
 
