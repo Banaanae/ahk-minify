@@ -1,6 +1,8 @@
 # ahk-minify
 
-An AutoHotKey Minifier/Uglifier wrote in AutoHotKey
+An AutoHotKey Minifier/Uglifier wrote in ~~AutoHotKey~~ Javascript
+
+Writing in javascript because debugging ahk regex is a pain, will work on a simulation solution soon
 
 Works using RegEx so it has the added benefit of easily being ported to other languages.
 
@@ -17,6 +19,6 @@ Works using RegEx so it has the added benefit of easily being ported to other la
 * [ ] Make online version with github pages
 * [ ] Start the cycle of fixing edge cases
 
-## RegEx Explanations
+## Rule Explanations
 
-TODO Write this with summaries
+TODO Write this with details
