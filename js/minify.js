@@ -108,6 +108,8 @@ function useShorthand(minification) {
     min = min.replace(/\s*-=\s*1$/gm, '--');
     min = min.replace(/(\s*if|while|for|loop(\s*|\().*?){\n(.*)\n}/gmi, '$1\n$2');
     min = min.replace(/(\s*.*)\.Add\("(ActiveX|Button|CheckBox|ComboBox|Custom|DateTime|DropDownList|DDL|Edit|GroupBox|Hotkey|Link|ListBox|ListView|MonthCal|Picture|Pic|Progress|Radio|Slider|StatusBar|Tab|Tab2|Tab3|Text|TreeView|UpDown)",/gmi, '$1.Add$2(')
+    min = min.replace(/^\s*#SingleInstance\s*Prompt\n/gmi, '')
+    min = min.replace(/^(\s*#SingleInstance)\s*Force\n/gmi, '$1\n')
     return min;
 };
 
